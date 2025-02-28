@@ -91,12 +91,16 @@ def main():
             
             with col1:
                 fig, ax = plt.subplots()
-                ax.pie([results['Percent Life Lived'], results['Percent Life Left']], labels=["Life Lived", "Life Left"], autopct='%1.1f%%')
+                ax.pie([results['Percent Life Lived'], results['Percent Life Left']], labels=["Life Lived", "Life Left"], autopct='%1.1f%%', colors=["#ff9999","#66b3ff"])
                 st.pyplot(fig)
                 
             with col2:
                 df = pd.DataFrame(results.items(), columns=['Category', 'Years'])
                 st.bar_chart(df.set_index('Category'))
+                
+            st.subheader("Detailed Breakdown")
+            df_breakdown = pd.DataFrame(results, index=[0]).T.rename(columns={0: "Years"})
+            st.dataframe(df_breakdown)
             
             st.write("Want to edit your data? Go back to the Input Data page!")
         else:
