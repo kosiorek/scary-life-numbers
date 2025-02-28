@@ -95,6 +95,8 @@ def main():
             ax.pie([results['Percent Life Lived'], results['Percent Life Left']], labels=["Life Lived", "Life Left"], autopct='%1.1f%%')
             st.pyplot(fig)
             
+            st.bar_chart({"Category": list(results.keys()), "Years": list(results.values())})
+            
             st.write("Want to edit your data? Go back to the Input Data page!")
         else:
             st.warning("Please enter your data first on the Input Data page!")
