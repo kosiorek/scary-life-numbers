@@ -14,7 +14,7 @@ avg_life_expectancy = {
 }
 
 def calculate_time_left(age, country, gender):
-    life_expectancy = avg_life_expectancy.get(country, {"Male": 80, "Female": 85})[gender]  # Default values if country not listed
+    life_expectancy = avg_life_expectancy.get(country, {"Male": 80, "Female": 85})[gender]
     years_left = max(life_expectancy - age, 0)
     years_passed = age
     percent_lived = (years_passed / life_expectancy) * 100
@@ -24,20 +24,16 @@ def calculate_time_left(age, country, gender):
 def calculate_metrics(age, country, gender, work_hours, sleep_hours, parent_age, visits_per_year, kid_age, social_media_hours, tv_hours, exercise_hours, commute_hours):
     years_left, years_passed, percent_lived, percent_left = calculate_time_left(age, country, gender)
     
-    # Basic Life Events
     summers_left = years_left
     christmas_left = years_left
     
-    # Family Time
     parent_years_left, _, _, _ = calculate_time_left(parent_age, country, gender)
     visits_with_parents = parent_years_left * visits_per_year
     
-    # Work & Sleep
     work_years = min(65 - age, years_left)
-    work_hours_left = work_years * work_hours * 50  # Assuming 50 work weeks per year
+    work_hours_left = work_years * work_hours * 50
     sleep_years = (sleep_hours / 24) * years_left
     
-    # Leisure and Screen Time
     social_media_years = (social_media_hours / 24) * years_left
     tv_years = (tv_hours / 24) * years_left
     exercise_years = (exercise_hours / 24) * years_left
@@ -91,11 +87,16 @@ def main():
             results = calculate_metrics(age, country, gender, work_hours, sleep_hours, parent_age, visits_per_year, kid_age, social_media_hours, tv_hours, exercise_hours, commute_hours)
             
             st.subheader("Your Life Overview")
-            fig, ax = plt.subplots()
-            ax.pie([results['Percent Life Lived'], results['Percent Life Left']], labels=["Life Lived", "Life Left"], autopct='%1.1f%%')
-            st.pyplot(fig)
+            col1, col2 = st.columns(2)
             
-            st.bar_chart({"Category": list(results.keys()), "Years": list(results.values())})
+            with col1:
+                fig, ax = plt.subplots()
+                ax.pie([results['Percent Life Lived'], results['Percent Life Left']], labels=["Life Lived", "Life Left"], autopct='%1.1f%%')
+                st.pyplot(fig)
+                
+            with col2:
+                df = pd.DataFrame(results.items(), columns=['Category', 'Years'])
+                st.bar_chart(df.set_index('Category'))
             
             st.write("Want to edit your data? Go back to the Input Data page!")
         else:
